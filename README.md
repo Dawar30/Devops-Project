@@ -20,6 +20,4 @@ Every pull request gets its first review within one working day.
 
 ## Installation
 
-```bash
-npm ci
-```
+Run `npm ci` to install dependencies.
