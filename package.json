@@ -1,5 +1,5 @@
 {
-  "name": "@Dawar30/devops-pipeline",
+  "name": "@dawar30/hussain-devops-pipeline",
   "version": "1.1.0",
   "description": "Renders the course Markdown sources into HTML pages.",
   "main": "tools/build.js",
@@ -23,11 +23,11 @@
     "tools/",
     "README.md"
   ],
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Dawar30/Devops-Project.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   }
 }
