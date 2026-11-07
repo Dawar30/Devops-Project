@@ -3,7 +3,7 @@ OUT_DIR := out
 SOURCES := $(wildcard $(SRC_DIR)/*.md)
 OUTPUTS := $(patsubst $(SRC_DIR)/%.md,$(OUT_DIR)/%.html,$(SOURCES))
 
-.PHONY: all check build test clean ci deps package
+.PHONY: all check build test clean ci deps package lint
 
 all: test
 
@@ -26,6 +26,9 @@ check:
 	fi
 	@echo "found $(words $(SOURCES)) source file(s) in $(SRC_DIR)"
 
+lint: node_modules
+	npm run --silent lint
+
 build: $(OUTPUTS)
 
 test: build
@@ -37,4 +40,4 @@ package: test
 clean:
 	rm -rf $(OUT_DIR) *.tgz
 
-ci: clean deps check test package
+ci: clean deps check lint test package
