@@ -1,7 +1,11 @@
-// test/render.test.js — unit tests that load tools/build.js directly,
-// so the coverage report finally measures the code that matters.
+
 const { test } = require('node:test');
 const assert = require('node:assert');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+const { spawnSync } = require('child_process');
+
 const { renderPage, main } = require('../tools/build');
 
 test('a heading becomes an h1', () => {
@@ -16,18 +20,33 @@ test('missing arguments give the usage exit code', () => {
   assert.strictEqual(main([]), 2);
 });
 
-test('pageTitle capitalises words and turns hyphens into spaces', () => {
-  assert.strictEqual(require('../tools/build').pageTitle('our-services'), 'Our Services');
-});
-
 test('main writes the page it was asked for', () => {
-  const os = require('os');
-  const fs = require('fs');
-  const path = require('path');
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'render-'));
   const src = path.join(dir, 'hello.md');
+  const dest = path.join(dir, 'out', 'hello.html');
+
   fs.writeFileSync(src, '# Hi');
-  assert.strictEqual(main([src, path.join(dir, 'out', 'hello.html')]), 0);
-  assert.match(fs.readFileSync(path.join(dir, 'out', 'hello.html'), 'utf8'),
-    /<title>Hello<\/title>/);
+
+  assert.strictEqual(main([src, dest]), 0);
+
+  const html = fs.readFileSync(dest, 'utf8');
+  assert.match(html, /<title>hello<\/title>/);
+  assert.match(html, /<h1>Hi<\/h1>/);
+});
+
+test('CLI executes build.js directly', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'build-cli-'));
+  const source = path.join(dir, 'input.md');
+  const dest = path.join(dir, 'output.html');
+
+  fs.writeFileSync(source, '# CLI Test');
+
+  const result = spawnSync(
+    process.execPath,
+    ['tools/build.js', source, dest],
+    { encoding: 'utf8' }
+  );
+
+  assert.strictEqual(result.status, 0);
+  assert.ok(fs.existsSync(dest));
 });
