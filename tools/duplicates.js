@@ -4,7 +4,7 @@ function isDuplicate(pageA, pageB) {
 
     return false;
   }
-  return pageA.title === pageA.title;
+  return pageA.title === pageB.title;
 }
  
 module.exports = { isDuplicate };
