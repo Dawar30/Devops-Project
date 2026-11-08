@@ -56,7 +56,6 @@ analyse:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 package: test
 	npm pack
-	needs: [test, analyse]
 
 clean:
 	rm -rf $(OUT_DIR) coverage *.tgz
