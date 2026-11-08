@@ -4,16 +4,9 @@
 const fs = require('fs');
 const path = require('path');
 const MarkdownIt = require('markdown-it');
-
+ 
 const md = new MarkdownIt({ html: false, linkify: true, typographer: true });
-
-// "our-services" -> "Our Services": the title shown in the browser tab.
-function pageTitle(name) {
-  return name
-    .replace(/-/g, ' ')
-    .replace(/\b\w/g, (c) => c.toUpperCase());
-}
-
+ 
 // The part worth testing: Markdown text in, a complete HTML page out.
 function renderPage(markdown, title) {
   return `<!doctype html>
@@ -23,22 +16,21 @@ function renderPage(markdown, title) {
 ${md.render(markdown)}</html>
 `;
 }
-
+ 
 function main(argv) {
   const [src, dest] = argv;
   if (!src || !dest) {
     console.error('usage: build.js <source.md> <dest.html>');
     return 2;
   }
-  const title = pageTitle(path.basename(src, '.md'));
-  const html = renderPage(fs.readFileSync(src, 'utf8'), title);
+  const html = renderPage(fs.readFileSync(src, 'utf8'), path.basename(src, '.md'));
   fs.mkdirSync(path.dirname(dest), { recursive: true });
   fs.writeFileSync(dest, html);
   return 0;
 }
-
-module.exports = { pageTitle, renderPage, main };
-
+ 
+module.exports = { renderPage, main };
+ 
 if (require.main === module) {
   process.exitCode = main(process.argv.slice(2));
 }
